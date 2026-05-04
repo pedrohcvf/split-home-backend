@@ -1,6 +1,7 @@
 package com.splithome.backend.auth.service;
 
 import com.splithome.backend.auth.dto.request.LoginRequest;
+import com.splithome.backend.exception.InvalidCredentialsException;
 import com.splithome.backend.user.entity.User;
 import com.splithome.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,10 @@ public class AuthService {
     public String login(LoginRequest request){
 
         User user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+                .orElseThrow(() -> new InvalidCredentialsException());
 
         if (!passwordEncoder.matches(request.password(), user.getPasswordHash())){
-            throw new RuntimeException("Senha incorreta");
+            throw new InvalidCredentialsException();
         }
 
         return jwtService.generateToken(user);

@@ -1,6 +1,7 @@
 package com.splithome.backend.user.service;
 
 import com.splithome.backend.auth.dto.request.RegisterRequest;
+import com.splithome.backend.exception.EmailAlreadyExistsException;
 import com.splithome.backend.user.entity.User;
 import com.splithome.backend.user.mapper.UserMapper;
 import com.splithome.backend.user.repository.UserRepository;
@@ -25,7 +26,7 @@ public class UserService {
     public User register(RegisterRequest request){
 
         if (userRepository.existsByEmail(request.email())){
-            throw new RuntimeException("Email já cadastrado.");
+            throw new EmailAlreadyExistsException(request.email());
         }
 
         String hashedPassword = passwordEncoder.encode(request.password());
