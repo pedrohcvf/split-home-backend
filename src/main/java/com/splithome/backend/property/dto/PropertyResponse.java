@@ -7,6 +7,5 @@ public record PropertyResponse(UUID id,
                                String description,
                                boolean available,
                                String ownerName,
-                               String ownerEmail,
-                               String token) {
+                               String ownerEmail) {
 }

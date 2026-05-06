@@ -1,7 +1,7 @@
 package com.splithome.backend.auth.service;
 
 import com.splithome.backend.auth.dto.request.LoginRequest;
-import com.splithome.backend.exception.InvalidCredentialsException;
+import com.splithome.backend.exception.customs.InvalidCredentialsException;
 import com.splithome.backend.property.repository.PropertyRepository;
 import com.splithome.backend.user.entity.User;
 import com.splithome.backend.user.repository.UserRepository;

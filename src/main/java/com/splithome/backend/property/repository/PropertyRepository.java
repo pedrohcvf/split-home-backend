@@ -13,4 +13,6 @@ public interface PropertyRepository extends JpaRepository<Property, UUID> {
 
     boolean existsByOwner(User owner);
 
+    boolean existsByOwnerAndAddress(User owner, String address);
+
 }
