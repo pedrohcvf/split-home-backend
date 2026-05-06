@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.Map;
 
 @Service
 public class JwtService {
@@ -28,13 +29,10 @@ public class JwtService {
     }
 
     // GERAR TOKEN
-    public String generateToken(User user){
+    public String generateToken(User user, Map<String, Object> extraClaims){
         return Jwts.builder()
                 .subject(user.getId().toString())
-                .claim("email", user.getEmail())
-                .claim("isOwner", false)
-                .claim("isMember", false)
-                .claim("tenancyId", null)
+                .claims(extraClaims)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(key)
