@@ -1,4 +1,4 @@
-package com.splithome.backend.exception;
+package com.splithome.backend.exception.customs;
 
 public class EmailAlreadyExistsException extends RuntimeException{
     public EmailAlreadyExistsException(String email){

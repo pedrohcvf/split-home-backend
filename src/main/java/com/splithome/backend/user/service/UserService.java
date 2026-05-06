@@ -1,7 +1,7 @@
 package com.splithome.backend.user.service;
 
 import com.splithome.backend.auth.dto.request.RegisterRequest;
-import com.splithome.backend.exception.EmailAlreadyExistsException;
+import com.splithome.backend.exception.customs.EmailAlreadyExistsException;
 import com.splithome.backend.user.entity.User;
 import com.splithome.backend.user.mapper.UserMapper;
 import com.splithome.backend.user.repository.UserRepository;
