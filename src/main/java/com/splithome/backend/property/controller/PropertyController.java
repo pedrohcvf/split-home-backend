@@ -4,6 +4,8 @@ import com.splithome.backend.property.dto.PropertyRequest;
 import com.splithome.backend.property.dto.PropertyCreateResponse;
 import com.splithome.backend.property.dto.PropertyResponse;
 import com.splithome.backend.property.service.PropertyService;
+import com.splithome.backend.user.dto.response.UserResponse;
+import com.splithome.backend.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +34,13 @@ public class PropertyController {
     public ResponseEntity<List<PropertyResponse>> listAllProperties(){
         List<PropertyResponse> listProperties = propertyService.listAllProperties();
         return ResponseEntity.status(HttpStatus.OK).body(listProperties);
+    }
+
+    // DELETAR IMÓVEL
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProperty(@PathVariable UUID id){
+        propertyService.deleteProperty(id);
+        return ResponseEntity.noContent().build();
     }
 
 
