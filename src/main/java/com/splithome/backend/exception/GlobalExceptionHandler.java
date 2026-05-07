@@ -1,16 +1,13 @@
 package com.splithome.backend.exception;
 
-import com.splithome.backend.exception.customs.EmailAlreadyExistsException;
-import com.splithome.backend.exception.customs.InvalidCredentialsException;
-import com.splithome.backend.exception.customs.PropertyAlreadyExistsException;
-import com.splithome.backend.exception.customs.UserNotFoundException;
+import com.splithome.backend.exception.customs.*;
 import com.splithome.backend.exception.dto.ErrorResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
+import org.springframework.security.access.AccessDeniedException;
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
@@ -49,6 +46,20 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handlePropertyAlreadyExistsException(PropertyAlreadyExistsException exception){
         ErrorResponseDto errorResponseDto = new ErrorResponseDto(409, exception.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponseDto);
+    }
+
+    // VALIDAÇÃO DO IMÓVEL
+    @ExceptionHandler(PropertyNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handlePropertyNotFoundException(PropertyNotFoundException exception){
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(404, exception.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponseDto);
+    }
+
+    // VALIDAÇÃO DO PROPRIETARIO PARA DELETAR IMÓVEL
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponseDto> handleAccessDenied(AccessDeniedException exception){
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(403, exception.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponseDto);
     }
 
     // VALIDAÇÃO GENÉRICA
