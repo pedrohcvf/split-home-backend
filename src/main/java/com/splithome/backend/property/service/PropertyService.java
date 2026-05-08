@@ -3,6 +3,7 @@ package com.splithome.backend.property.service;
 import com.splithome.backend.auth.service.JwtService;
 import com.splithome.backend.exception.customs.PropertyAlreadyExistsException;
 import com.splithome.backend.exception.customs.PropertyNotFoundException;
+import com.splithome.backend.property.dto.PropertyAvailabilityRequest;
 import com.splithome.backend.property.dto.PropertyRequest;
 import com.splithome.backend.property.dto.PropertyCreateResponse;
 import com.splithome.backend.property.dto.PropertyResponse;
@@ -10,6 +11,8 @@ import com.splithome.backend.property.entity.Property;
 import com.splithome.backend.property.repository.PropertyRepository;
 import com.splithome.backend.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.access.AccessDeniedException;
@@ -85,6 +88,28 @@ public class PropertyService {
         }
 
         propertyRepository.deleteById(id);
+    }
+
+    // ALTERAR DISPONIBILIDADE
+    public PropertyResponse changeAvailability(UUID id, PropertyAvailabilityRequest request){
+        Property property = propertyRepository.findById(id).orElseThrow(() -> new PropertyNotFoundException(id));
+        User owner = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!property.getOwner().getId().equals(owner.getId())){
+            throw  new AccessDeniedException("Voce não tem permissão para editar esse imóvel");
+        }
+
+        property.setAvailable(request.available());
+
+        Property savedProperty = propertyRepository.save(property);
+
+        return new PropertyResponse(
+                savedProperty.getId(),
+                savedProperty.getAddress(),
+                savedProperty.getDescription(),
+                savedProperty.isAvailable(),
+                owner.getName(),
+                owner.getEmail());
     }
 
 }
