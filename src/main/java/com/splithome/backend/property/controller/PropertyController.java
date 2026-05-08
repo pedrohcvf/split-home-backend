@@ -1,8 +1,10 @@
 package com.splithome.backend.property.controller;
 
+import com.splithome.backend.property.dto.PropertyAvailabilityRequest;
 import com.splithome.backend.property.dto.PropertyRequest;
 import com.splithome.backend.property.dto.PropertyCreateResponse;
 import com.splithome.backend.property.dto.PropertyResponse;
+import com.splithome.backend.property.entity.Property;
 import com.splithome.backend.property.service.PropertyService;
 import com.splithome.backend.user.dto.response.UserResponse;
 import com.splithome.backend.user.entity.User;
@@ -41,6 +43,13 @@ public class PropertyController {
     public ResponseEntity<Void> deleteProperty(@PathVariable UUID id){
         propertyService.deleteProperty(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // ATUALIZAR DISPONIBILIDADE
+    @PatchMapping("/{id}/availability")
+    public ResponseEntity<PropertyResponse> changeAvailability(@PathVariable UUID id, @RequestBody PropertyAvailabilityRequest request){
+        PropertyResponse property = propertyService.changeAvailability(id, request);
+        return ResponseEntity.status(HttpStatus.OK).body(property);
     }
 
 
