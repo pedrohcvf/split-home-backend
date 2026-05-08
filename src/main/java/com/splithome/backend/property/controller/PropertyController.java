@@ -52,6 +52,4 @@ public class PropertyController {
         return ResponseEntity.status(HttpStatus.OK).body(property);
     }
 
-
-
 }
