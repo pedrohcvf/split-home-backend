@@ -2,6 +2,7 @@ package com.splithome.backend.exception;
 
 import com.splithome.backend.exception.customs.*;
 import com.splithome.backend.exception.dto.ErrorResponseDto;
+import com.splithome.backend.user.entity.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -60,6 +61,34 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handleAccessDenied(AccessDeniedException exception){
         ErrorResponseDto errorResponseDto = new ErrorResponseDto(403, exception.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponseDto);
+    }
+
+    // VALIDAÇÃO DA LOCAÇÃO NO ENDEREÇO
+    @ExceptionHandler(TenancyAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponseDto> handleTenancyAlreadyExistsException(TenancyAlreadyExistsException exception){
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(409, exception.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponseDto);
+    }
+
+    // VALIDAÇÃO DA LOCAÇÃO NA PROPRIEDADE
+    @ExceptionHandler(TenancyNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleTenancyNotFoundException(TenancyNotFoundException exception){
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(404, exception.getMessage(), LocalDateTime.now());
+        return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponseDto);
+    }
+
+    // VALIDAÇÃO DA INATIVIDADE DA LOCAÇÃO
+    @ExceptionHandler(TenancyInactiveException.class)
+    public ResponseEntity<ErrorResponseDto> handleTenancyInactiveException(TenancyInactiveException exception){
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(400, exception.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseDto);
+    }
+
+    // VALIDAÇÃO DO USUÁRIO NA LOCAÇÃO
+    @ExceptionHandler(UserAlreadyMemberException.class)
+    public ResponseEntity<ErrorResponseDto> handleUserAlreadyMemberException(UserAlreadyMemberException exception){
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(409, exception.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponseDto);
     }
 
     // VALIDAÇÃO GENÉRICA
