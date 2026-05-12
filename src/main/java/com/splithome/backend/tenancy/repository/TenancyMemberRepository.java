@@ -18,4 +18,6 @@ public interface TenancyMemberRepository extends JpaRepository<TenancyMember, UU
 
     boolean existsByUser(User user);
 
+    boolean existsByTenancy(Tenancy tenancy);
+
 }

@@ -8,7 +8,7 @@ public class InviteCodeGenerator {
 
     private static final SecureRandom random = new SecureRandom();
 
-    public static String generate(){
+    public static String generateInviteCode(){
         StringBuilder code = new StringBuilder("SPLIT-");
 
         for (int i = 0; i < 6; i++){
