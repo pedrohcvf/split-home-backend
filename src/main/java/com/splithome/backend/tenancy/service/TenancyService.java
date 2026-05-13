@@ -11,7 +11,6 @@ import com.splithome.backend.tenancy.entity.TenancyMember;
 import com.splithome.backend.tenancy.repository.TenancyMemberRepository;
 import com.splithome.backend.tenancy.repository.TenancyRepository;
 import com.splithome.backend.user.entity.User;
-import com.splithome.backend.user.repository.UserRepository;
 import com.splithome.backend.util.InviteCodeGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -19,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 
 @Service
@@ -46,6 +46,10 @@ public class TenancyService {
 
         if (tenancyRepository.existsByPropertyAndActive(property, true)){
             throw new TenancyAlreadyExistsException(property.getAddress());
+        }
+
+        if (!property.isAvailable()){
+            throw new PropertyUnavailableException(property.getAddress());
         }
 
         String inviteCode = InviteCodeGenerator.generateInviteCode();
@@ -78,7 +82,7 @@ public class TenancyService {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Tenancy tenancy = tenancyRepository.findByInviteCode(inviteCode)
-                .orElseThrow(() -> new TenancyNotFoundException(inviteCode));
+                .orElseThrow(() -> new TenancyNotFoundException());
 
         if (!tenancy.isActive()){
             throw new TenancyInactiveException(inviteCode);
@@ -99,6 +103,7 @@ public class TenancyService {
         claims.put("isOwner", false);
         claims.put("email", user.getEmail());
         claims.put("tenancyId", tenancy.getId());
+        claims.put("isHead", head);
 
         String token = jwtService.generateToken(user, claims);
 
@@ -107,5 +112,24 @@ public class TenancyService {
                 tenancy.getProperty().getAddress(),
                 tenancy.isActive(),
                 token);
+    }
+
+    // RESGATAR INVITE CODE
+    public TenancyResponse rescueInviteCode(UUID id){
+        User owner = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Tenancy tenancy = tenancyRepository.findById(id)
+                .orElseThrow(() -> new TenancyNotFoundException());
+
+        if (!tenancy.getProperty().getOwner().getId().equals(owner.getId()) &&
+                !tenancyMemberRepository.existsByTenancyAndUserAndHead(tenancy, owner, true)){
+            throw new AccessDeniedException("Você não tem permissão para resgatar o invite code do imóvel");
+        }
+
+        return new TenancyResponse(tenancy.getId(),
+                tenancy.getInviteCode(),
+                tenancy.getProperty().getAddress(),
+                tenancy.isActive(),
+                null);
     }
 }
