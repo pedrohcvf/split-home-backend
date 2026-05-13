@@ -98,6 +98,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponseDto);
     }
 
+    // VALIDAÇÃO DE USUÁRIO NAO PERTENCENTE A LOCAÇÃO
+    @ExceptionHandler(UserNotMemberException.class)
+    public ResponseEntity<ErrorResponseDto> handleUserNotMemberException(UserNotMemberException exception){
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(403, exception.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponseDto);
+    }
+
     // VALIDAÇÃO GENÉRICA
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> handleGenericException(Exception exception){
