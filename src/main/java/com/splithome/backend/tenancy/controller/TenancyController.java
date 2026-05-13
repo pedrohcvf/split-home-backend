@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/tenancy")
 @RequiredArgsConstructor
@@ -27,6 +29,13 @@ public class TenancyController {
     @PostMapping("/join/{inviteCode}")
     public ResponseEntity<TenancyResponse> joinByInviteCode(@PathVariable String inviteCode){
         TenancyResponse tenancyResponse = tenancyService.joinByInviteCode(inviteCode);
+        return ResponseEntity.status(HttpStatus.OK).body(tenancyResponse);
+    }
+
+    // RESGATAR INVITE CODE
+    @GetMapping("/{id}/invite-code")
+    public ResponseEntity<TenancyResponse> rescueInviteCode(@PathVariable UUID id){
+        TenancyResponse tenancyResponse = tenancyService.rescueInviteCode(id);
         return ResponseEntity.status(HttpStatus.OK).body(tenancyResponse);
     }
 }

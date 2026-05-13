@@ -91,6 +91,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponseDto);
     }
 
+    // VALIDAÇÃO DE DISPONIBILIDADE DA PROPRIEDADE
+    @ExceptionHandler(PropertyUnavailableException.class)
+    public ResponseEntity<ErrorResponseDto> handlePropertyUnavailableException(PropertyUnavailableException exception){
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(409, exception.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponseDto);
+    }
+
     // VALIDAÇÃO GENÉRICA
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> handleGenericException(Exception exception){
