@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +35,7 @@ public class ExpenseService {
 
     // CRIAR DESPESA
     public ExpenseResponse createExpense(ExpenseRequest request){
-        User owner = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Tenancy tenancy = tenancyRepository.findById(request.tenancyId())
                 .orElseThrow(()-> new TenancyNotFoundException());
@@ -43,13 +44,13 @@ public class ExpenseService {
             throw new TenancyInactiveException(tenancy.toString());
         }
 
-        if (!tenancyMemberRepository.existsByTenancyAndUser(tenancy, owner)){
-            throw new UserNotMemberException(owner.getEmail());
+        if (!tenancyMemberRepository.existsByTenancyAndUser(tenancy, currentUser)){
+            throw new UserNotMemberException(currentUser.getEmail());
         }
 
         Expense expense = Expense.builder()
                 .tenancy(tenancy)
-                .paidBy(owner)
+                .paidBy(currentUser)
                 .description(request.description())
                 .amount(request.amount())
                 .build();
@@ -75,5 +76,28 @@ public class ExpenseService {
                 expenseSaved.getAmount(),
                 expenseSaved.getPaidBy().getName(),
                 expenseSaved.getCreatedAt());
+    }
+
+    // LISTAR DESPESAS
+    public List<ExpenseResponse> listExpenses(UUID tenancyId){
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Tenancy tenancy = tenancyRepository.findById(tenancyId)
+                .orElseThrow(() -> new TenancyNotFoundException());
+
+        if (!tenancyMemberRepository.existsByTenancyAndUser(tenancy, currentUser)){
+            throw new UserNotMemberException(currentUser.getEmail());
+        }
+
+        return expenseRepository.findAllByTenancy(tenancy)
+                .stream()
+                .map(expense -> new ExpenseResponse(
+                        expense.getTenancy().getId(),
+                        expense.getId(),
+                        expense.getDescription(),
+                        expense.getAmount(),
+                        expense.getPaidBy().getName(),
+                        expense.getCreatedAt()))
+                .toList();
     }
 }
