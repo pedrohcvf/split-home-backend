@@ -63,6 +63,7 @@ O **SplitHome** é um sistema desenvolvido com Java e Spring Boot para repúblic
 
 ## 📁 Estrutura do Projeto
 
+```
 src/main/java/com/splithome/backend/
 ├── auth/
 │   ├── controller/
@@ -97,6 +98,8 @@ src/main/java/com/splithome/backend/
 ├── config/
 ├── exception/
 └── BackendApplication.java
+```
+
 ---
 
 ## 📡 Endpoints
@@ -136,13 +139,13 @@ src/main/java/com/splithome/backend/
 
 ## 🔄 Fluxo Principal
 
-| 1- Registro → Login → JWT |
-| 2- Criar imóvel → JWT atualizado (isOwner: true) |
-| 3- Marcar imóvel como disponível |
-| 4- Criar tenancy → invite code + JWT atualizado (isMember: true) |
-| 5- Compartilhar invite code com moradores |
-| 6- Moradores entram via /tenancy/join/{inviteCode} → Primeiro vira HEAD, demais entram como membros |
-| 7- Qualquer membro lança despesas → Splits gerados automaticamente para todos os membros |
+1. Registro → Login → JWT
+2. Criar imóvel → JWT atualizado (`isOwner: true`)
+3. Marcar imóvel como disponível
+4. Criar tenancy → invite code + JWT atualizado (`isMember: true`)
+5. Compartilhar invite code com os moradores
+6. Moradores entram via `/tenancy/join/{inviteCode}` → primeiro vira HEAD, demais entram como membros
+7. Qualquer membro lança despesas → splits gerados automaticamente para todos os membros
 
 ---
 
@@ -197,8 +200,9 @@ mvn spring-boot:run
 ```
 
 **5️⃣ Acesse a API**
-
+```
 http://localhost:8080
+```
 
 ---
 
