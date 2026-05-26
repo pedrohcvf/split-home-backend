@@ -24,4 +24,6 @@ public interface TenancyMemberRepository extends JpaRepository<TenancyMember, UU
 
     List<TenancyMember> findAllByTenancy(Tenancy tenancy);
 
+    Optional<TenancyMember> findByUser(User user);
+
 }
