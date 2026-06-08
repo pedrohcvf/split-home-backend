@@ -11,8 +11,6 @@ import com.splithome.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -40,21 +38,7 @@ public class AuthService {
             throw new InvalidCredentialsException();
         }
 
-        Optional<TenancyMember> membership = tenancyMemberRepository.findByUser(user);
-
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("isOwner", propertyRepository.existsByOwner(user));
-
-        if (membership.isPresent()) {
-            TenancyMember member = membership.get();
-            claims.put("isMember", true);
-            claims.put("tenancyId", member.getTenancy().getId().toString());
-        } else {
-            claims.put("isMember", false);
-            claims.put("tenancyId", null);
-        }
-
-        return jwtService.generateToken(user, claims);
+        return jwtService.generateToken(user);
     }
 
     // DADOS DO USUÁRIO AUTENTICADO

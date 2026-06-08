@@ -7,10 +7,8 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.Map;
 
 @Service
 public class JwtService {
@@ -29,10 +27,9 @@ public class JwtService {
     }
 
     // GERAR TOKEN
-    public String generateToken(User user, Map<String, Object> extraClaims){
+    public String generateToken(User user){
         return Jwts.builder()
                 .subject(user.getId().toString())
-                .claims(extraClaims)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(key)
