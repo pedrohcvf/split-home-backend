@@ -16,8 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 
@@ -62,13 +60,7 @@ public class TenancyService {
 
         propertyRepository.save(property);
 
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("isOwner", true);
-        claims.put("isMember", false);
-        claims.put("email", owner.getEmail());
-        claims.put("tenancyId", savedTenancy.getId());
-
-        String token = jwtService.generateToken(owner, claims);
+        String token = jwtService.generateToken(owner);
 
         return new TenancyResponse(savedTenancy.getId(),
                 savedTenancy.getInviteCode(),
@@ -98,14 +90,7 @@ public class TenancyService {
 
         tenancyMemberRepository.save(member);
 
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("isMember", true);
-        claims.put("isOwner", false);
-        claims.put("email", user.getEmail());
-        claims.put("tenancyId", tenancy.getId());
-        claims.put("isHead", head);
-
-        String token = jwtService.generateToken(user, claims);
+        String token = jwtService.generateToken(user);
 
         return new TenancyResponse(tenancy.getId(),
                 tenancy.getInviteCode(),

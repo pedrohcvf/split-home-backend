@@ -11,14 +11,10 @@ import com.splithome.backend.property.entity.Property;
 import com.splithome.backend.property.repository.PropertyRepository;
 import com.splithome.backend.user.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.access.AccessDeniedException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 
@@ -46,12 +42,7 @@ public class PropertyService {
 
         Property savedProperty = propertyRepository.save(property);
 
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("isOwner", true);
-        claims.put("isMember", false);
-        claims.put("email", owner.getEmail());
-
-        String token = jwtService.generateToken(owner, claims);
+        String token = jwtService.generateToken(owner);
 
         return new PropertyCreateResponse(savedProperty.getId(),
                                     savedProperty.getAddress(),
